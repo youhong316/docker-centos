@@ -25,7 +25,7 @@ This tag supports the following environment variables:
 
 References:
 
-* https://www.consul.io/docs/agent/services.html
+* (https://www.consul.io/docs/agent/services.html)[https://www.consul.io/docs/agent/services.html]
 
 ## 7-consul
 
@@ -40,4 +40,4 @@ This tag supports the following environment variables:
 
 References:
 
-* https://www.consul.io/docs/agent/services.html
+* (https://www.consul.io/docs/agent/services.html)[https://www.consul.io/docs/agent/services.html]
