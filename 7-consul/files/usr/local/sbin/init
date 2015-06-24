@@ -5,6 +5,7 @@
 import errno
 import os
 import signal
+import string
 import subprocess
 import sys
 import time
@@ -47,11 +48,11 @@ def main():
     # Create a service from an environment variable
     if os.getenv('CONSUL_SERVICE'):
         with open('/etc/consul.d/env_CONSUL_SERVICE.json', 'w') as f:
-            f.write(os.getenv('CONSUL_SERVICE'))
+            f.write(string.Template(os.getenv('CONSUL_SERVICE')).safe_substitute(os.environ))
 
     # Start consul
     if os.getenv('CONSUL_AGENT'):
-        consul_process = subprocess.Popen(consul_command + ['-join', os.getenv('CONSUL_AGENT')])
+        consul_process = subprocess.Popen(consul_command + ['-join', string.Template(os.getenv('CONSUL_AGENT')).safe_substitute(os.environ)])
     else:
         consul_process = subprocess.Popen(consul_command)
 
