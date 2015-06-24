@@ -1,0 +1,69 @@
+#!/usr/bin/env python
+
+"""init"""
+
+import errno
+import os
+import signal
+import subprocess
+import sys
+import time
+
+consul_command = ['consul', 'agent', '-data-dir=/tmp/consul', '-config-dir', '/etc/consul.d']
+
+consul_process = None
+cmd_process = None
+
+
+def shutdown(signum, _frame):
+    # shutdown consul
+    if consul_process is not None:
+        try:
+            consul_process.send_signal(signum)
+        except OSError as exc:
+            # No such process is OK
+            if exc.errno != errno.ESRCH:
+                raise
+        consul_process.wait()
+
+    # shutdown command
+    if cmd_process is not None:
+        try:
+            cmd_process.send_signal(signum)
+        except OSError as exc:
+            # No such process is OK
+            if exc.errno != errno.ESRCH:
+                raise
+        cmd_process.wait()
+
+
+def main():
+    global consul_process
+    global cmd_process
+
+    signal.signal(signal.SIGINT, shutdown)
+    signal.signal(signal.SIGTERM, shutdown)
+
+    # Create a service from an environment variable
+    if os.getenv('CONSUL_SERVICE'):
+        with open('/etc/consul.d/env_CONSUL_SERVICE.json', 'w') as f:
+            f.write(os.getenv('CONSUL_SERVICE'))
+
+    # Start consul
+    if os.getenv('CONSUL_AGENT'):
+        consul_process = subprocess.Popen(consul_command + ['-join', os.getenv('CONSUL_AGENT')])
+    else:
+        consul_process = subprocess.Popen(consul_command)
+
+    # Start command
+    cmd_process = subprocess.Popen(sys.argv[1:])
+    while True:
+        if cmd_process.poll() is not None:
+            # shutdown consul gracefully
+            shutdown(signal.SIGTERM, None)
+            sys.exit(cmd_process.returncode)
+        time.sleep(1)
+
+
+if __name__ == '__main__':
+    main()
