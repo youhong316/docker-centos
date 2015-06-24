@@ -16,7 +16,7 @@ This tag is the same as `centos:7`.
 
 [![](https://badge.imagelayers.io/pdericson/centos:6-consul.svg)](https://imagelayers.io/?images=pdericson/centos:6-consul)
 
-Run <cmd> with a consul agent.
+Run `<cmd>` with a consul agent.
 
 This tag supports the following environment variables:
 
@@ -31,7 +31,7 @@ References:
 
 [![](https://badge.imagelayers.io/pdericson/centos:7-consul.svg)](https://imagelayers.io/?images=pdericson/centos:7-consul)
 
-Run <cmd> with a consul agent.
+Run `<cmd>` with a consul agent.
 
 This tag supports the following environment variables:
 
